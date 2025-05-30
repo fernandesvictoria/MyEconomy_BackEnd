@@ -1,4 +1,4 @@
-package auth;
+package com.me.myEconomy.auth;
 
 import java.time.Instant;
 import java.util.stream.Collectors;

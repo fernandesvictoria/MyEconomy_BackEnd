@@ -15,7 +15,7 @@ import com.me.myEconomy.exception.MeException;
 import com.me.myEconomy.model.entity.Usuario;
 import com.me.myEconomy.service.UsuarioService;
 
-import auth.AuthService;
+import com.me.myEconomy.auth.AuthService; 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

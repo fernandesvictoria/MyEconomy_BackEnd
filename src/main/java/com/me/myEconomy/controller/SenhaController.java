@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.me.myEconomy.auth.AuthService;
 import com.me.myEconomy.exception.MeException;
 import com.me.myEconomy.model.dto.SenhaDTO;
 import com.me.myEconomy.model.dto.SenhaListagemDTO;
 import com.me.myEconomy.model.entity.Usuario;
 import com.me.myEconomy.service.SenhaService;
 
-import auth.AuthService;
 import jakarta.validation.Valid;
 
 @RestController

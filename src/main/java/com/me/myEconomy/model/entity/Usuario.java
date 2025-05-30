@@ -6,7 +6,9 @@ import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -44,8 +46,12 @@ public class Usuario implements UserDetails {
 	private LocalDate dataNascimento;
 
 	@OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER)
-	@JsonManagedReference(value = "usuario-senha")
-	private List<Senha> senhas;
+	@JsonManagedReference(value = "usuario-despesa")
+	private List<Despesa> despesas;
+	
+	@OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER)
+	@JsonManagedReference(value = "usuario-limite")
+	private List<Limite> limites;
 
 
     @Override

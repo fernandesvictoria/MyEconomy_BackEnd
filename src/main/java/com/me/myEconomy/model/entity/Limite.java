@@ -1,5 +1,7 @@
 package com.me.myEconomy.model.entity;
 
+import java.time.LocalDate;
+
 import org.hibernate.annotations.UuidGenerator;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -10,25 +12,23 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Entity
 @Data
-public class Senha {
+public class Limite {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
 	@UuidGenerator
-	private String  idSenha;
+	private String idLimite;
 
-	private String senha;
-	
-	@NotBlank(message = "Nome da senha é obrigatório")
-	private String nome;
+	private String valor;
+
+	private LocalDate mes;
 
 	@ManyToOne
 	@JoinColumn(name = "usuario_id")
-	@JsonBackReference("usuario-senha")
+	@JsonBackReference("usuario-limite")
 	private Usuario usuario;
 }

@@ -1,6 +1,10 @@
 package com.me.myEconomy.service;
 
+import java.time.LocalDate;
+import java.time.format.TextStyle;
 import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,7 +29,20 @@ public class LimiteService {
 
 	public HttpStatus cadastrarLimite(LimiteDTO dto, Usuario usuario) throws MeException {
 
-		
+		LocalDate mesAtual = dto.getMes();
+
+		// Verifica se já existe um limite para o usuário no MÊS/ANO
+		Optional<Limite> limiteExistente = limiteRepository.findByUsuarioAndMesAndAno(usuario, mesAtual);
+
+		if (limiteExistente.isPresent()) {
+			throw new MeException("Já existe um limite cadastrado para "
+					+ mesAtual.getMonth().getDisplayName(TextStyle.FULL, Locale.getDefault()) + "/"
+					+ mesAtual.getYear(), HttpStatus.BAD_REQUEST);
+		}
+		if (mesAtual.isBefore(LocalDate.now().withDayOfMonth(1))) {
+			throw new MeException("Não é possível cadastrar limites para meses passados.", HttpStatus.BAD_REQUEST);
+		}
+
 		Limite limite = new Limite();
 		limite.setValor(dto.getValor());
 		limite.setMes(dto.getMes());

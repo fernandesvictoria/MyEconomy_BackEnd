@@ -1,5 +1,7 @@
 package com.me.myEconomy.service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.List;
@@ -11,12 +13,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.me.myEconomy.exception.MeException;
-import com.me.myEconomy.model.dto.DespesaDTO;
 import com.me.myEconomy.model.dto.LimiteDTO;
 import com.me.myEconomy.model.dto.LimiteListagemDTO;
-import com.me.myEconomy.model.entity.Despesa;
 import com.me.myEconomy.model.entity.Limite;
 import com.me.myEconomy.model.entity.Usuario;
+import com.me.myEconomy.model.repository.DespesaRepository;
 import com.me.myEconomy.model.repository.LimiteRepository;
 
 @Service
@@ -24,6 +25,8 @@ public class LimiteService {
 
 	@Autowired
 	private LimiteRepository limiteRepository;
+	@Autowired
+	private DespesaRepository despesaRepository;
 
 	public HttpStatus cadastrarLimite(LimiteDTO dto, Usuario usuario) throws MeException {
 
@@ -42,7 +45,7 @@ public class LimiteService {
 		}
 
 		Limite limite = new Limite();
-		limite.setValor(dto.getValor());
+		limite.setValor(arredondarDuasCasas(dto.getValor()));
 		limite.setData(dto.getData());
 		limite.setUsuario(usuario);
 		limiteRepository.save(limite);
@@ -63,7 +66,7 @@ public class LimiteService {
 			throw new MeException("Não é possível cadastrar limites para meses passados.", HttpStatus.BAD_REQUEST);
 		}
 
-		limiteExistente.setValor(dto.getValor());
+		limiteExistente.setValor(arredondarDuasCasas(dto.getValor()));
 		limiteExistente.setData(novaData);
 
 		limiteRepository.save(limiteExistente);
@@ -80,6 +83,29 @@ public class LimiteService {
 
 	public List<LimiteListagemDTO> buscarLimiteDoUsuario(Long idUsuario) {
 		return limiteRepository.findAllByUsuarioId(idUsuario);
+	}
+
+	public Double calcularSaldoDoMes(Usuario usuario, LocalDate data) throws MeException {
+		Optional<Limite> limiteOpt = limiteRepository.findByUsuarioAndMesAndAno(usuario, data);
+
+		if (limiteOpt.isEmpty()) {
+			throw new MeException("Nenhum limite cadastrado para este mês.", HttpStatus.NOT_FOUND);
+		}
+
+		Double limite = limiteOpt.get().getValor();
+
+		Double totalDespesas = despesaRepository.somarDespesasDoMes(usuario.getIdUsuario(), data);
+		if (totalDespesas == null) {
+			totalDespesas = 0.0;
+		}
+
+		Double saldo = limite - totalDespesas;
+
+		return arredondarDuasCasas(saldo);
+	}
+
+	private Double arredondarDuasCasas(Double valor) {
+		return BigDecimal.valueOf(valor).setScale(2, RoundingMode.HALF_UP).doubleValue();
 	}
 
 }

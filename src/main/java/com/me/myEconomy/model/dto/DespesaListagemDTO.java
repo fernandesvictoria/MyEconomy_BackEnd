@@ -10,6 +10,6 @@ import lombok.Data;
 public class DespesaListagemDTO {
 
     private String descricao;
-    private String valor;
-    private LocalDate mes;
+    private Double valor;
+    private LocalDate data;
 }

@@ -24,12 +24,12 @@ public class Despesa {
 	@UuidGenerator
 	private String  idDespesa;
 
-	private String valor;
+	private Double valor;
 	
 	@NotBlank(message = "Nome da senha é obrigatório")
 	private String descricao;
 	
-	private LocalDate mes;
+	private LocalDate data;
 	
 	@ManyToOne
 	@JoinColumn(name = "usuario_id")

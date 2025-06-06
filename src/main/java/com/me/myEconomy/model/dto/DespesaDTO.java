@@ -11,9 +11,9 @@ public class DespesaDTO {
 
 	private String descricao;
 
-	private String valor;
+	private Double valor;
 	
-	private LocalDate mes;
+	private LocalDate data;
 
 	private String idUsuario;
 }

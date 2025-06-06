@@ -9,9 +9,9 @@ import lombok.Data;
 @AllArgsConstructor
 public class LimiteDTO {
 
-	private String valor;
+	private Double valor;
 	
-	private LocalDate mes;
+	private LocalDate data;
 
 	private String idUsuario;
 }

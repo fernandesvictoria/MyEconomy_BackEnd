@@ -17,10 +17,10 @@ import com.me.myEconomy.model.entity.Usuario;
 @Repository
 public interface LimiteRepository extends JpaRepository<Limite, String>, JpaSpecificationExecutor<Limite> {
 
-	@Query("SELECT new com.me.myEconomy.model.dto.LimiteListagemDTO(s.valor, s.mes) FROM Limite s WHERE s.usuario.idUsuario = :usuarioId")
+	@Query("SELECT new com.me.myEconomy.model.dto.LimiteListagemDTO(s.valor, s.data) FROM Limite s WHERE s.usuario.idUsuario = :usuarioId")
 	List<LimiteListagemDTO> findAllByUsuarioId(@Param("usuarioId") Long usuarioId);
 
-	@Query("SELECT l FROM Limite l WHERE l.usuario = :usuario AND MONTH(l.mes) = MONTH(:mes) AND YEAR(l.mes) = YEAR(:mes)")
-	Optional<Limite> findByUsuarioAndMesAndAno(@Param("usuario") Usuario usuario, @Param("mes") LocalDate mes);
+	@Query("SELECT l FROM Limite l WHERE l.usuario = :usuario AND MONTH(l.data) = MONTH(:data) AND YEAR(l.data) = YEAR(:data)")
+	Optional<Limite> findByUsuarioAndMesAndAno(@Param("usuario") Usuario usuario, @Param("data") LocalDate mes);
 	
 }

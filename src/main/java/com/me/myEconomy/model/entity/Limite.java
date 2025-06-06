@@ -23,9 +23,9 @@ public class Limite {
 	@UuidGenerator
 	private String idLimite;
 
-	private String valor;
+	private Double valor;
 
-	private LocalDate mes;
+	private LocalDate data;
 
 	@ManyToOne
 	@JoinColumn(name = "usuario_id")

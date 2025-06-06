@@ -9,6 +9,6 @@ import lombok.Data;
 @AllArgsConstructor
 public class LimiteListagemDTO {
 
-	private String valor;
-	private LocalDate mes;
+	private Double valor;
+	private LocalDate data;
 }

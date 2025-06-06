@@ -1,5 +1,7 @@
 package com.me.myEconomy.service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +20,6 @@ public class DespesaService {
 	@Autowired
 	private DespesaRepository despesaRepository;
 
-	public Despesa criarSenha(Despesa despesa) throws MeException {
-		return despesaRepository.save(despesa);
-	}
-
 	public HttpStatus cadastrarDespesa(DespesaDTO dto, Usuario usuario) throws MeException {
 
 		LocalDate mesAtual = dto.getData();
@@ -31,36 +29,35 @@ public class DespesaService {
 		}
 		Despesa despesa = new Despesa();
 		despesa.setDescricao(dto.getDescricao());
-		despesa.setValor(dto.getValor());
+		despesa.setValor(arredondarDuasCasas(dto.getValor()));
 		despesa.setData(dto.getData());
 		despesa.setUsuario(usuario);
 		despesaRepository.save(despesa);
 
 		return HttpStatus.CREATED;
 	}
-	
+
 	public HttpStatus editarDespesa(String idDespesa, DespesaDTO dto, Usuario usuario) throws MeException {
-	    Despesa despesaExistente = despesaRepository.findById(idDespesa)
-	        .orElseThrow(() -> new MeException("Despesa não encontrada", HttpStatus.NOT_FOUND));
+		Despesa despesaExistente = despesaRepository.findById(idDespesa)
+				.orElseThrow(() -> new MeException("Despesa não encontrada", HttpStatus.NOT_FOUND));
 
-	    if (!despesaExistente.getUsuario().getIdUsuario().equals(usuario.getIdUsuario())) {
-	        throw new MeException("Você não tem permissão para editar esta despesa", HttpStatus.FORBIDDEN);
-	    }
+		if (!despesaExistente.getUsuario().getIdUsuario().equals(usuario.getIdUsuario())) {
+			throw new MeException("Você não tem permissão para editar esta despesa", HttpStatus.FORBIDDEN);
+		}
 
-	    LocalDate novaData = dto.getData();
-	    if (novaData.isBefore(LocalDate.now().withDayOfMonth(1))) {
-	        throw new MeException("Não é possível cadastrar despesas para meses passados.", HttpStatus.BAD_REQUEST);
-	    }
+		LocalDate novaData = dto.getData();
+		if (novaData.isBefore(LocalDate.now().withDayOfMonth(1))) {
+			throw new MeException("Não é possível cadastrar despesas para meses passados.", HttpStatus.BAD_REQUEST);
+		}
 
-	    despesaExistente.setDescricao(dto.getDescricao());
-	    despesaExistente.setValor(dto.getValor());
-	    despesaExistente.setData(novaData);
+		despesaExistente.setDescricao(dto.getDescricao());
+		despesaExistente.setValor(arredondarDuasCasas(dto.getValor()));
+		despesaExistente.setData(novaData);
 
-	    despesaRepository.save(despesaExistente);
+		despesaRepository.save(despesaExistente);
 
-	    return HttpStatus.OK;
+		return HttpStatus.OK;
 	}
-
 
 	public void deletarDespesa(String itemId) throws MeException {
 		if (!despesaRepository.existsById(itemId)) {
@@ -71,6 +68,16 @@ public class DespesaService {
 
 	public List<DespesaListagemDTO> buscarDespesasDoUsuario(Long idUsuario) {
 		return despesaRepository.findAllByUsuarioId(idUsuario);
+	}
+
+	public Double somarDespesasDoMes(LocalDate data, Usuario usuario) {
+		Double total = despesaRepository.somarDespesasDoMes(usuario.getIdUsuario(), data);
+
+		return total != null ? arredondarDuasCasas(total) : 0.0;
+	}
+
+	private Double arredondarDuasCasas(Double valor) {
+		return BigDecimal.valueOf(valor).setScale(2, RoundingMode.HALF_UP).doubleValue();
 	}
 
 }

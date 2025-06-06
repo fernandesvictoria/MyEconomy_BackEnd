@@ -1,6 +1,5 @@
 package com.me.myEconomy.model.repository;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +25,7 @@ public interface DespesaRepository extends JpaRepository<Despesa, String>, JpaSp
 	Optional<Limite> findByUsuarioAndMesAndAno(@Param("usuario") Usuario usuario, @Param("data") LocalDate mes);
 	
 	@Query("SELECT SUM(d.valor) FROM Despesa d WHERE d.usuario.id = :usuarioId AND MONTH(d.data) = MONTH(:data) AND YEAR(d.data) = YEAR(:data)")
-	BigDecimal somarDespesasDoMes(@Param("usuarioId") Long usuarioId, @Param("data") LocalDate data);
+	Double somarDespesasDoMes(@Param("usuarioId") Long usuarioId, @Param("data") LocalDate data);
 
 	Optional<Despesa> findByDescricao(String descricao);
 }

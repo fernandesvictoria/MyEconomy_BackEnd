@@ -7,6 +7,7 @@ import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import com.me.myEconomy.model.entity.Limite;
 import com.me.myEconomy.model.entity.Usuario;
 import com.me.myEconomy.model.repository.DespesaRepository;
 import com.me.myEconomy.model.repository.LimiteRepository;
+import com.me.myEconomy.model.repository.UsuarioRepository;
 
 @Service
 public class LimiteService {
@@ -27,6 +29,9 @@ public class LimiteService {
 	private LimiteRepository limiteRepository;
 	@Autowired
 	private DespesaRepository despesaRepository;
+	@Autowired
+	private UsuarioRepository usuarioRepository;
+
 
 	public HttpStatus cadastrarLimite(LimiteDTO dto, Usuario usuario) throws MeException {
 
@@ -81,8 +86,18 @@ public class LimiteService {
 		limiteRepository.deleteById(itemId);
 	}
 
-	public List<LimiteListagemDTO> buscarLimiteDoUsuario(Long idUsuario) {
-		return limiteRepository.findAllByUsuarioId(idUsuario);
+	public List<LimiteListagemDTO> buscarLimiteDoUsuario(Long usuarioId) throws MeException {
+		Usuario usuario = usuarioRepository.findById(usuarioId)
+		        .orElseThrow(() -> new MeException("Usuário não encontrado",HttpStatus.NOT_FOUND));
+
+		    List<Limite> limites = limiteRepository.findAllByUsuario(usuario);
+	    return limites.stream()
+	        .map(limite -> new LimiteListagemDTO(
+	            limite.getIdLimite(),
+	            limite.getValor(),
+	            limite.getData()
+	        ))
+	        .collect(Collectors.toList());
 	}
 
 	public Double calcularSaldoDoMes(Usuario usuario, LocalDate data) throws MeException {

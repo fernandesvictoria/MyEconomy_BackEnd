@@ -8,7 +8,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class LimiteDTO {
-
 	private Double valor;
 	
 	private LocalDate data;

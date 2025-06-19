@@ -64,7 +64,7 @@ public class LimiteController {
 	}
 
 	@GetMapping("/limites")
-	public List<LimiteListagemDTO> buscarTodasDespesas() throws MeException {
+	public List<LimiteListagemDTO> buscarLimiteDoUsuario() throws MeException {
 		Usuario usuario = authService.getUsuarioAutenticado();
 		return limiteService.buscarLimiteDoUsuario(usuario.getIdUsuario());
 	}

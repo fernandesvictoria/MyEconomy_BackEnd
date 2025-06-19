@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -13,12 +15,16 @@ import com.me.myEconomy.model.dto.DespesaListagemDTO;
 import com.me.myEconomy.model.entity.Despesa;
 import com.me.myEconomy.model.entity.Usuario;
 import com.me.myEconomy.model.repository.DespesaRepository;
+import com.me.myEconomy.model.repository.UsuarioRepository;
 
 @Service
 public class DespesaService {
 
 	@Autowired
 	private DespesaRepository despesaRepository;
+
+	@Autowired
+	private UsuarioRepository usuarioRepository;
 
 	public HttpStatus cadastrarDespesa(DespesaDTO dto, Usuario usuario) throws MeException {
 
@@ -66,8 +72,19 @@ public class DespesaService {
 		despesaRepository.deleteById(itemId);
 	}
 
-	public List<DespesaListagemDTO> buscarDespesasDoUsuario(Long idUsuario) {
-		return despesaRepository.findAllByUsuarioId(idUsuario);
+	public List<DespesaListagemDTO> buscarDespesasDoUsuario(Long usuarioId) throws MeException {
+		Usuario usuario = usuarioRepository.findById(usuarioId)
+		        .orElseThrow(() -> new MeException("Usuário não encontrado",HttpStatus.NOT_FOUND));
+
+		    List<Despesa> despesas = despesaRepository.findAllByUsuario(usuario);
+	    return despesas.stream()
+	        .map(despesa -> new DespesaListagemDTO(
+	        		despesa.getIdDespesa(),
+	        		despesa.getDescricao(),
+	        		despesa.getValor(),
+	        		despesa.getData()
+	        ))
+	        .collect(Collectors.toList());
 	}
 
 	public Double somarDespesasDoMes(LocalDate data, Usuario usuario) {

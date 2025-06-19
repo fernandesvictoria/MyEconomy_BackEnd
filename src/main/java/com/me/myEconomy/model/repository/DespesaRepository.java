@@ -18,8 +18,7 @@ import com.me.myEconomy.model.entity.Usuario;
 @Repository
 public interface DespesaRepository extends JpaRepository<Despesa, String>, JpaSpecificationExecutor<Despesa> {
 
-	@Query("SELECT new com.me.myEconomy.model.dto.DespesaListagemDTO(s.descricao, s.valor,s.data) FROM Despesa s WHERE s.usuario.id = :usuarioId")
-	List<DespesaListagemDTO> findAllByUsuarioId(@Param("usuarioId") Long usuarioId);
+	List<Despesa> findAllByUsuario(Usuario usuario);
 	
 	@Query("SELECT l FROM Despesa l WHERE l.usuario = :usuario AND MONTH(l.data) = MONTH(:data) AND YEAR(l.data) = YEAR(:data)")
 	Optional<Limite> findByUsuarioAndMesAndAno(@Param("usuario") Usuario usuario, @Param("data") LocalDate mes);

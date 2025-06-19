@@ -9,6 +9,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class DespesaListagemDTO {
 
+	private String idDespesa;
     private String descricao;
     private Double valor;
     private LocalDate data;

@@ -81,7 +81,7 @@ public class LimiteService {
 
 	public void deletarLimite(String itemId) throws MeException {
 		if (!limiteRepository.existsById(itemId)) {
-			throw new MeException("Limite nao encontrado", HttpStatus.NOT_FOUND);
+			throw new MeException("Limite não encontrado", HttpStatus.NOT_FOUND);
 		}
 		limiteRepository.deleteById(itemId);
 	}

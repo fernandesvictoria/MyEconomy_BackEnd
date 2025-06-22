@@ -67,7 +67,7 @@ public class DespesaService {
 
 	public void deletarDespesa(String itemId) throws MeException {
 		if (!despesaRepository.existsById(itemId)) {
-			throw new MeException("Despesa nao encontrada", HttpStatus.NOT_FOUND);
+			throw new MeException("Despesa não encontrada", HttpStatus.NOT_FOUND);
 		}
 		despesaRepository.deleteById(itemId);
 	}
